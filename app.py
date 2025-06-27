@@ -6,6 +6,7 @@ from PyPDF2 import PdfReader, PdfWriter
 from wand.image import Image as WandImage
 from PIL import Image as PILImage
 from werkzeug.utils import secure_filename
+from flask import abort
 
 app = Flask(__name__)
 
@@ -14,6 +15,10 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 # === UTILITIES ===
+
+@app.errorhandler(413)
+def too_large(e):
+    return "File is too large. Maximum allowed size is 32 MB.", 413
 
 def extract_first_page(input_pdf_path, output_pdf_path):
     try:
